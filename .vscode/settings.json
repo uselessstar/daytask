@@ -1,38 +1,38 @@
 {
-    "editor.rulers": [
-        {
-            "column": 100,
-            "color": "#90ffff2c"
-        },
-        {
-            "column": 110,
-            "color": "#ffff9950"
-        },
-        {
-            "column": 120,
-            "color": "#ff9393aa"
-        }
-    ],
-    "editor.renderWhitespace": "boundary",
-    "files.eol": "\n",
-    "editor.formatOnSave": true,
-    "files.exclude": {
-        "**/.git": true,
-        "**/.DS_Store": true,
-        "**/target": true
+  "editor.rulers": [
+    {
+      "column": 100,
+      "color": "#90ffff2c"
     },
-    "explorer.compactFolders": true,
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "files.watcherExclude": {
-        ".git/objects/**": true,
-        ".git/subtree-cache/**": true,
-        "**/target/**": true,
-        "*/.git/objects/**": true,
-        "*/.git/subtree-cache/**": true
+    {
+      "column": 110,
+      "color": "#ffff9950"
     },
-    "search.exclude": {
-        "**/target": true
-    },
-    "rust-analyzer.cargo.targetDir": true
+    {
+      "column": 120,
+      "color": "#ff9393aa"
+    }
+  ],
+  "editor.renderWhitespace": "boundary",
+  "files.eol": "\n",
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/target": true
+  },
+  "explorer.compactFolders": true,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.watcherExclude": {
+    ".git/objects/**": true,
+    ".git/subtree-cache/**": true,
+    "**/target/**": true,
+    "*/.git/objects/**": true,
+    "*/.git/subtree-cache/**": true
+  },
+  "search.exclude": {
+    "**/target": true
+  },
+  "rust-analyzer.cargo.targetDir": true
 }
