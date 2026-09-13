@@ -1,0 +1,14 @@
+[package]
+name = "daytask"
+version = "0.0.1"
+edition = "2024"
+description = "todo"
+license-file = "./LICENSE.txt"
+
+[lib]
+bench = false
+doc = true
+doctest = true
+name = "daytask"
+path = "src/lib.rs"
+test = true
