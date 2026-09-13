@@ -1,0 +1,17 @@
+{
+    "editor.rulers": [
+        {
+            "column": 100,
+            "color": "#90ffff0c"
+        },
+        {
+            "column": 110,
+            "color": "#ffff992c"
+        },
+        {
+            "column": 120,
+            "color": "#ff939367"
+        }
+    ],
+    "files.eol": "\n",
+}
