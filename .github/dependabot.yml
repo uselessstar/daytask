@@ -9,4 +9,4 @@ updates:
       - dependency-type: production
     commit-message:
       prefix: "deps"
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: auto
