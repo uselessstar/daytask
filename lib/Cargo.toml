@@ -3,6 +3,7 @@ name = "daytask"
 version = "0.0.0"
 edition = "2024"
 description = "todo"
+repository = "https://github.com/uselessstar/daytask"
 license-file = "./LICENSE.txt"
 
 [lib]
