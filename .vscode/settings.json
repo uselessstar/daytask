@@ -2,15 +2,15 @@
     "editor.rulers": [
         {
             "column": 100,
-            "color": "#90ffff0c"
+            "color": "#90ffff2c"
         },
         {
             "column": 110,
-            "color": "#ffff992c"
+            "color": "#ffff9950"
         },
         {
             "column": 120,
-            "color": "#ff939367"
+            "color": "#ff9393aa"
         }
     ],
     "editor.renderWhitespace": "boundary",
