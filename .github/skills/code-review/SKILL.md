@@ -1,12 +1,12 @@
 ---
-name: explain-pr-change
+name: code-review
 description: "Explain why a Pull Request reviewer, including Copilot, is requesting a change and what happens if it is ignored. Use only for PR review comments when the user wants the rationale or consequences explained."
 argument-hint: "Describe the PR change request you want explained"
 user-invocable: false
 disable-model-invocation: false
 ---
 
-# Explain PR Change
+# Code Review
 
 ## Outcome
 
