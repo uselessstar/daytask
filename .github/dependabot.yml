@@ -1,0 +1,12 @@
+version: 2
+
+updates:
+  - package-ecosystem: cargo
+    directory: "/lib"
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: production
+    commit-message:
+      prefix: "deps"
+    versioning-strategy: auto
