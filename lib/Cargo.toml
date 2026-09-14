@@ -14,6 +14,13 @@ name = "daytask"
 path = "src/lib.rs"
 test = true
 
+[dependencies]
+log = { version = "0.4.34", optional = true }
+
+[features]
+default = ["log"]
+log = ["dep:log"]
+
 [lints.clippy]
 allow_attributes = "deny"
 allow_attributes_without_reason = "warn"
