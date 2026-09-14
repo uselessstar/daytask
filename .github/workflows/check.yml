@@ -1,4 +1,4 @@
-name: Test Rust Code
+name: Check Rust Code
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  check-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -33,6 +33,12 @@ jobs:
       - name: Build
         working-directory: lib
         run: cargo build
+      - name: Check formatting
+        working-directory: lib
+        run: cargo fmt --all -- --check
+      - name: Run clippy
+        working-directory: lib
+        run: cargo clippy --all-targets --all-features -- -D warnings
       - name: Run tests
         working-directory: lib
         run: cargo test
