@@ -16,10 +16,12 @@ test = true
 
 [dependencies]
 log = { version = "0.4.34", optional = true }
+serde = { version = "1.0.229", features = ["derive"], optional = true }
 
 [features]
 default = ["log"]
 log = ["dep:log"]
+serde = ["dep:serde", "log/serde"]
 
 [lints.clippy]
 allow_attributes = "deny"
