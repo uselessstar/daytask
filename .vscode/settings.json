@@ -34,5 +34,12 @@
   "search.exclude": {
     "**/target": true
   },
-  "rust-analyzer.cargo.targetDir": true
+  "rust-analyzer.cargo.targetDir": true,
+  "rust-analyzer.cargo.allTargets": true,
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.check.features": "all",
+  "rust-analyzer.cargo.features": "all",
+  "files.readonlyInclude": {
+    "**/Cargo.lock": true
+  }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "daytask"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2024"
 description = "todo"
 repository = "https://github.com/uselessstar/daytask"
@@ -14,10 +14,23 @@ name = "daytask"
 path = "src/lib.rs"
 test = true
 
+[dependencies]
+log = { version = "0.4.34", optional = true }
+serde = { version = "1.0.229", features = ["derive"], optional = true }
+thiserror = "2.0.20"
+uuid = { version = "1.26.1", features = ["v7"] }
+
+[features]
+default = ["log"]
+log = ["dep:log"]
+serde = ["dep:serde", "log/serde", "uuid/serde"]
+
 [lints.clippy]
 allow_attributes = "deny"
 allow_attributes_without_reason = "warn"
-correctness = { level = "forbid", priority = -1 }
+correctness = { level = "deny", priority = -1 }
+perf = { level = "warn", priority = -1 }
+suspicious = { level = "warn", priority = -1 }
 
 [lints.rust]
 missing_copy_implementations = "warn"
