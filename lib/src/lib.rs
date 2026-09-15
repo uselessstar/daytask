@@ -14,6 +14,7 @@ use uuid::Uuid;
 
 /// todo
 #[derive(Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Task {
     id: Uuid,
 }
