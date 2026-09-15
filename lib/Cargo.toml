@@ -17,11 +17,12 @@ test = true
 [dependencies]
 log = { version = "0.4.34", optional = true }
 serde = { version = "1.0.229", features = ["derive"], optional = true }
+uuid = { version = "1.26.1", features = ["v7"] }
 
 [features]
 default = ["log"]
 log = ["dep:log"]
-serde = ["dep:serde", "log/serde"]
+serde = ["dep:serde", "log/serde", "uuid/serde"]
 
 [lints.clippy]
 allow_attributes = "deny"
