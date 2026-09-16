@@ -10,6 +10,13 @@
     )
 )]
 
+macro_rules! debug_log {
+    ($($arg:tt)*) => {
+        #[cfg(feature = "log")]
+        log::debug!($($arg)*)
+    };
+}
+
 use uuid::Uuid;
 
 /// todo
@@ -39,10 +46,9 @@ impl TaskBuilder {
 
     /// todo
     pub fn build(self) -> Task {
-        Task {
-            id: self.id.unwrap_or_else(Uuid::now_v7),
-            name: self.name,
-        }
+        let id = self.id.unwrap_or_else(Uuid::now_v7);
+        debug_log!(target: "task", "Task built: id={}, name={:?}", id, self.name);
+        Task { id, name: self.name }
     }
 }
 
@@ -57,10 +63,12 @@ pub struct Task {
 impl Task {
     /// todo
     pub fn new(name: impl Into<String>) -> Self {
-        Self {
+        let task = Self {
             id: Uuid::now_v7(),
             name: name.into(),
-        }
+        };
+        debug_log!(target: "task","Task created: {:#?}", task);
+        task
     }
 
     /// todo
@@ -75,6 +83,7 @@ impl Task {
 
     /// todo
     pub fn set_name(&mut self, name: impl Into<String>) {
-        self.name = name.into();
+        let old = std::mem::replace(&mut self.name, name.into());
+        debug_log!(target: "task", "Task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
     }
 }
