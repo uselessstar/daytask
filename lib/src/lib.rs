@@ -14,4 +14,4 @@
 mod macros;
 mod task;
 
-pub use task::{Task, TaskBuilder};
+pub use task::Task;

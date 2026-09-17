@@ -1,39 +1,6 @@
 use uuid::Uuid;
 
 /// todo
-#[derive(Debug, Default)]
-pub struct TaskBuilder {
-    name: String,
-    id: Option<Uuid>,
-}
-
-impl TaskBuilder {
-    /// todo
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// todo
-    pub fn with_id(mut self, id: impl Into<Uuid>) -> Self {
-        self.id = Some(id.into());
-        self
-    }
-
-    /// todo
-    pub fn with_name(mut self, name: impl Into<String>) -> Self {
-        self.name = name.into();
-        self
-    }
-
-    /// todo
-    pub fn build(self) -> Task {
-        let id = self.id.unwrap_or_else(Uuid::now_v7);
-        debug_log!(target: "task", "Task built: id={}, name={:?}", id, self.name);
-        Task { id, name: self.name }
-    }
-}
-
-/// todo
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Task {
