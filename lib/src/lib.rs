@@ -6,7 +6,8 @@
         missing_docs,
         unused,
         clippy::perf,
-        clippy::suspicious
+        clippy::suspicious,
+        clippy::missing_errors_doc
     )
 )]
 
@@ -14,4 +15,4 @@
 mod macros;
 mod task;
 
-pub use task::Task;
+pub use task::{Task, TaskError};

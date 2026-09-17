@@ -1,4 +1,18 @@
+use thiserror::Error;
 use uuid::Uuid;
+
+/// Errors that can occur while creating or updating a [`Task`].
+#[derive(Debug, Error, Clone, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[expect(
+    missing_copy_implementations,
+    reason = "task error is an enum representing errors related to task operations and does not need to be copyable"
+)]
+pub enum TaskError {
+    /// The task name is empty or contains only whitespace.
+    #[error("task name cannot be empty")]
+    EmptyName,
+}
 
 /// todo
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -15,23 +29,31 @@ impl Task {
     /// # Arguments
     /// - **name**: The name to set to the [task](Task).
     ///
+    /// # Errors
+    /// Returns [`TaskError::EmptyName`] when the name is empty or contains only whitespace.
+    ///
     /// # Example
     /// ```
     /// # use daytask::Task;
     /// #
-    /// let task = Task::new("example");
+    /// let task = Task::new("example").expect("valid task name");
     /// let clone_task = task.clone();
     ///
     /// assert_eq!(clone_task,task);
     /// ```
-    pub fn new(name: impl Into<String>) -> Self {
+    pub fn new(name: impl Into<String>) -> Result<Self, TaskError> {
+        let name = name.into();
+        if name.trim().is_empty() {
+            return Err(TaskError::EmptyName);
+        }
+
         let task = Self {
             id: Uuid::now_v7(),
-            name: name.into(),
+            name,
             description: None,
         };
-        debug_log!(target: "task","Task created: {:#?}", task);
-        task
+        debug_log!(target: "task", "task created: {:#?}", task);
+        Ok(task)
     }
 
     /// Returns the id of the [task](Task).
@@ -54,25 +76,33 @@ impl Task {
     /// # Arguments
     /// - **name**: The new name to set.
     ///
+    /// # Errors
+    /// Returns [`TaskError::EmptyName`] when the name is empty or contains only whitespace.
+    ///
     /// # Example
     /// ```
     /// # use daytask::Task;
     /// #
-    /// let mut task = Task::new("example");
-    /// task.set_name("example 2");
+    /// let mut task = Task::new("example").expect("valid task name");
+    /// task.set_name("example 2").expect("valid task name");
     ///
     /// assert_eq!(task.name(), "example 2");
     /// ```
-    pub fn set_name(&mut self, name: impl Into<String>) {
+    pub fn set_name(&mut self, name: impl Into<String>) -> Result<(), TaskError> {
+        let name = name.into();
+        if name.trim().is_empty() {
+            return Err(TaskError::EmptyName);
+        }
         #[cfg(feature = "log")]
         {
-            let old = std::mem::replace(&mut self.name, name.into());
-            debug_log!(target: "task", "Task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
+            let old = std::mem::replace(&mut self.name, name);
+            debug_log!(target: "task", "task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
         }
         #[cfg(not(feature = "log"))]
         {
             self.name = name.into();
         }
+        Ok(())
     }
 
     /// Sets the description of the [task](Task).
@@ -84,7 +114,7 @@ impl Task {
     /// ```
     /// # use daytask::Task;
     /// #
-    /// let mut task = Task::new("example");
+    /// let mut task = Task::new("example").expect("valid task name");
     /// task.set_description("This is a description");
     ///
     /// assert_eq!(task.description(), Some("This is a description"));
@@ -93,7 +123,7 @@ impl Task {
         #[cfg(feature = "log")]
         {
             let old = self.description.replace(description.into());
-            debug_log!(target: "task", "Task description changed: id={}, old={:?}, new={:?}", self.id, old, self.description);
+            debug_log!(target: "task", "task description changed: id={}, old={:?}, new={:?}", self.id, old, self.description);
         }
         #[cfg(not(feature = "log"))]
         {
@@ -107,7 +137,7 @@ impl Task {
     /// ```
     /// # use daytask::Task;
     /// #
-    /// let mut task = Task::new("example");
+    /// let mut task = Task::new("example").expect("valid task name");
     /// task.set_description("This is a description");
     /// task.clear_description();
     ///
@@ -117,7 +147,7 @@ impl Task {
         #[cfg(feature = "log")]
         {
             let old = self.description.take();
-            debug_log!(target: "task", "Task description cleared: id={}, old={:?}", self.id, old);
+            debug_log!(target: "task", "task description cleared: id={}, old={:?}", self.id, old);
         }
         #[cfg(not(feature = "log"))]
         {
@@ -132,7 +162,7 @@ mod tests {
 
     #[test]
     fn test_task_creation() {
-        let task = Task::new("Test Task");
+        let task = Task::new("Test Task").expect("valid task name");
 
         assert_eq!(task.name(), "Test Task");
         assert_ne!(task.id(), Uuid::nil());
@@ -140,23 +170,32 @@ mod tests {
 
     #[test]
     fn test_unique_ids() {
-        let task1 = Task::new("Task #1");
-        let task2 = Task::new("Task #2");
+        let task1 = Task::new("Task #1").expect("valid task name");
+        let task2 = Task::new("Task #2").expect("valid task name");
 
         assert_ne!(task1.id(), task2.id());
     }
 
     #[test]
     fn test_set_name() {
-        let mut task = Task::new("Initial Name");
-        task.set_name("Updated Name");
+        let mut task = Task::new("Initial Name").expect("valid task name");
+        task.set_name("Updated Name").expect("valid task name");
 
         assert_eq!(task.name(), "Updated Name");
     }
 
     #[test]
+    fn test_empty_name_is_rejected() {
+        assert_eq!(Task::new("   "), Err(TaskError::EmptyName));
+
+        let mut task = Task::new("Valid Name").expect("valid task name");
+        assert_eq!(task.set_name("\t"), Err(TaskError::EmptyName));
+        assert_eq!(task.name(), "Valid Name");
+    }
+
+    #[test]
     fn test_description_starts_empty_and_can_be_set() {
-        let mut task = Task::new("Description Test");
+        let mut task = Task::new("Description Test").expect("valid task name");
 
         assert_eq!(task.description(), None);
 
@@ -167,7 +206,7 @@ mod tests {
 
     #[test]
     fn test_description_can_be_replaced_and_removed() {
-        let mut task = Task::new("Description Update Test");
+        let mut task = Task::new("Description Update Test").expect("valid task name");
 
         task.set_description("Initial details");
         task.set_description(String::from("Updated details"));
@@ -183,10 +222,10 @@ mod tests {
 
     #[test]
     fn test_mutations_preserve_task_identity() {
-        let mut task = Task::new("Identity Test");
+        let mut task = Task::new("Identity Test").expect("valid task name");
         let id = task.id();
 
-        task.set_name("Renamed");
+        task.set_name("Renamed").expect("valid task name");
         task.set_description("Details");
         task.clear_description();
 
@@ -195,7 +234,7 @@ mod tests {
 
     #[test]
     fn test_equality_and_cloning() {
-        let task = Task::new("Clone Test");
+        let task = Task::new("Clone Test").expect("valid task name");
         let cloned_task = task.clone();
 
         assert_eq!(task, cloned_task);
@@ -206,10 +245,10 @@ mod tests {
     #[cfg(feature = "serde")]
     #[test]
     fn test_serde_serialization() {
-        let mut task = Task::new("Serde Test");
+        let mut task = Task::new("Serde Test").expect("valid task name");
         task.set_description("Serialized details");
-        let serialized = serde_json::to_string(&task).expect("Serialization Failed");
-        let deserialized: Task = serde_json::from_str(&serialized).expect("Deserialization Failed");
+        let serialized = serde_json::to_string(&task).expect("serialization failed");
+        let deserialized: Task = serde_json::from_str(&serialized).expect("deserialization failed");
 
         assert_eq!(task, deserialized);
     }
