@@ -57,7 +57,63 @@ impl Task {
     /// assert_eq!(task.name(), "example 2");
     /// ```
     pub fn set_name(&mut self, name: impl Into<String>) {
-        let old = std::mem::replace(&mut self.name, name.into());
-        debug_log!(target: "task", "Task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
+        #[cfg(feature = "log")]
+        {
+            let old = std::mem::replace(&mut self.name, name.into());
+            debug_log!(target: "task", "Task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
+        }
+        #[cfg(not(feature = "log"))]
+        {
+            self.name = name.into();
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_task_creation() {
+        let task = Task::new("Test Task");
+
+        assert_eq!(task.name(), "Test Task");
+        assert_ne!(task.id(), Uuid::nil());
+    }
+
+    #[test]
+    fn test_unique_ids() {
+        let task1 = Task::new("Task #1");
+        let task2 = Task::new("Task #2");
+
+        assert_ne!(task1.id(), task2.id());
+    }
+
+    #[test]
+    fn test_set_name() {
+        let mut task = Task::new("Initial Name");
+        task.set_name("Updated Name");
+
+        assert_eq!(task.name(), "Updated Name");
+    }
+
+    #[test]
+    fn test_equality_and_cloning() {
+        let task = Task::new("Clone Test");
+        let cloned_task = task.clone();
+
+        assert_eq!(task, cloned_task);
+        assert_eq!(task.id(), cloned_task.id());
+        assert_eq!(task.name(), cloned_task.name());
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_serde_serialization() {
+        let task = Task::new("Serde Test");
+        let serialized = serde_json::to_string(&task).expect("Serialization Failed");
+        let deserialized: Task = serde_json::from_str(&serialized).expect("Deserialization Failed");
+
+        assert_eq!(task, deserialized);
     }
 }
