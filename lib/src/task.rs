@@ -9,7 +9,10 @@ pub struct Task {
 }
 
 impl Task {
-    /// todo
+    /// Creates a new [Task].
+    ///
+    /// # Arguments
+    /// - **name**: The name to set to the [task](Task).
     pub fn new(name: impl Into<String>) -> Self {
         let task = Self {
             id: Uuid::now_v7(),
@@ -19,17 +22,20 @@ impl Task {
         task
     }
 
-    /// todo
+    /// Returns the id of the [task](Task).
     pub fn id(&self) -> Uuid {
         self.id
     }
 
-    /// todo
+    /// Returns the name of the [task](Task).
     pub fn name(&self) -> &str {
         &self.name
     }
 
-    /// todo
+    /// Sets the name of the [task](Task).
+    ///
+    /// # Arguments
+    /// - **name**: The new name to set.
     pub fn set_name(&mut self, name: impl Into<String>) {
         let old = std::mem::replace(&mut self.name, name.into());
         debug_log!(target: "task", "Task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
