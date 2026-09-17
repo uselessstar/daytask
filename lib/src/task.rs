@@ -13,6 +13,16 @@ impl Task {
     ///
     /// # Arguments
     /// - **name**: The name to set to the [task](Task).
+    ///
+    /// # Example
+    /// ```
+    /// # use daytask::Task;
+    /// #
+    /// let task = Task::new("example");
+    /// let clone_task = task.clone();
+    ///
+    /// assert_eq!(clone_task,task);
+    /// ```
     pub fn new(name: impl Into<String>) -> Self {
         let task = Self {
             id: Uuid::now_v7(),
@@ -36,6 +46,16 @@ impl Task {
     ///
     /// # Arguments
     /// - **name**: The new name to set.
+    ///
+    /// # Example
+    /// ```
+    /// # use daytask::Task;
+    /// #
+    /// let mut task = Task::new("example");
+    /// task.set_name("example 2");
+    ///
+    /// assert_eq!(task.name(), "example 2");
+    /// ```
     pub fn set_name(&mut self, name: impl Into<String>) {
         let old = std::mem::replace(&mut self.name, name.into());
         debug_log!(target: "task", "Task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
