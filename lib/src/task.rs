@@ -400,4 +400,25 @@ mod tests {
 
         assert_eq!(task, deserialized);
     }
+
+    #[test]
+    fn test_status_try_from_valid_values() {
+        assert_eq!(Status::try_from(0u8), Ok(Status::Pending));
+        assert_eq!(Status::try_from(1u8), Ok(Status::InProgress));
+        assert_eq!(Status::try_from(2u8), Ok(Status::Completed));
+    }
+
+    #[test]
+    fn test_status_try_from_invalid_values() {
+        assert_eq!(Status::try_from(3u8), Err(TaskError::InvalidStatusValue(3)));
+        assert_eq!(Status::try_from(255u8), Err(TaskError::InvalidStatusValue(255)));
+    }
+
+    #[test]
+    fn test_status_roundtrip() {
+        for status in [Status::Pending, Status::InProgress, Status::Completed] {
+            let value = status as u8;
+            assert_eq!(Status::try_from(value), Ok(status));
+        }
+    }
 }
