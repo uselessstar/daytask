@@ -17,16 +17,19 @@ pub enum Status {
 
 impl Status {
     /// Returns `true` if the status is [Pending](Status::Pending), `false` otherwise.
+    #[must_use]
     pub fn is_pending(&self) -> bool {
         matches!(self, Status::Pending)
     }
 
     /// Returns `true` if the status is [InProgress](Status::InProgress), `false` otherwise.
+    #[must_use]
     pub fn is_in_progress(&self) -> bool {
         matches!(self, Status::InProgress)
     }
 
     /// Returns `true` if the status is [Completed](Status::Completed), `false` otherwise.
+    #[must_use]
     pub fn is_completed(&self) -> bool {
         matches!(self, Status::Completed)
     }
@@ -132,21 +135,25 @@ impl Task {
     }
 
     /// Returns the id of the [task](Task).
+    #[must_use]
     pub fn id(&self) -> Uuid {
         self.id
     }
 
     /// Returns the name of the [task](Task).
+    #[must_use]
     pub fn name(&self) -> &str {
         &self.name
     }
 
     /// Returns the status of the [task](Task).
+    #[must_use]
     pub fn status(&self) -> Status {
         self.status
     }
 
     /// Returns the description of the [task](Task).
+    #[must_use]
     pub fn description(&self) -> Option<&str> {
         self.description.as_deref()
     }
@@ -273,16 +280,19 @@ impl Task {
     }
 
     /// Returns true if the [task](Task) is pending.
+    #[must_use]
     pub fn is_pending(&self) -> bool {
         self.status.is_pending()
     }
 
     /// Returns true if the [task](Task) is in progress.
+    #[must_use]
     pub fn is_in_progress(&self) -> bool {
         self.status.is_in_progress()
     }
 
     /// Returns true if the [task](Task) is completed.
+    #[must_use]
     pub fn is_completed(&self) -> bool {
         self.status.is_completed()
     }
