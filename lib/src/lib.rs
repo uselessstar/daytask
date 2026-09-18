@@ -23,4 +23,4 @@ mod errors;
 mod task;
 
 pub use errors::TaskError;
-pub use task::Task;
+pub use task::{Status, Task};
