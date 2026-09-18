@@ -12,50 +12,49 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        features: ["v4", "v7"]
     steps:
       - uses: actions/checkout@v7
-      - name: Install Toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - name: Cache Rust dependencies
-        uses: actions/cache@v6
+      - uses: actions/cache@v6
         with:
           path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            lib/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ matrix.features }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
+            ${{ runner.os }}-cargo-${{ matrix.features }}-
             ${{ runner.os }}-cargo-
       - name: Check formatting
         working-directory: lib
         run: cargo fmt --all -- --check
       - name: Run clippy
         working-directory: lib
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --no-default-features --features ${{ matrix.features }} -- -D warnings
+
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        features: ["v4", "v7"]
     steps:
       - uses: actions/checkout@v7
-      - name: Install Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
-      - name: Cache Rust dependencies
-        uses: actions/cache@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/cache@v6
         with:
           path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            lib/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ matrix.features }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
+            ${{ runner.os }}-cargo-${{ matrix.features }}-
             ${{ runner.os }}-cargo-
       - name: Run tests
         working-directory: lib
-        run: cargo test
+        run: cargo test --no-default-features --features ${{ matrix.features }}

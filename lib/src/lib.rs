@@ -6,6 +6,21 @@
         missing_docs,
         unused,
         clippy::perf,
-        clippy::suspicious
+        clippy::suspicious,
+        clippy::missing_errors_doc
     )
 )]
+
+#[cfg(all(feature = "v4", feature = "v7"))]
+compile_error!("features `v4` and `v7` cannot be enabled at the same time");
+
+#[cfg(not(any(feature = "v4", feature = "v7")))]
+compile_error!("either feature `v4` or feature `v7` must be enabled");
+
+#[macro_use]
+mod macros;
+mod errors;
+mod task;
+
+pub use errors::TaskError;
+pub use task::{Status, Task};
