@@ -32,6 +32,19 @@ impl Status {
     }
 }
 
+impl TryFrom<u8> for Status {
+    type Error = TaskError;
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        match value {
+            x if x == Status::Pending as u8 => Ok(Status::Pending),
+            x if x == Status::InProgress as u8 => Ok(Status::InProgress),
+            x if x == Status::Completed as u8 => Ok(Status::Completed),
+            _ => Err(TaskError::InvalidStatusValue(value)),
+        }
+    }
+}
+
 /// Represents a task with a unique identifier, name, optional description, and status.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
