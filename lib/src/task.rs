@@ -5,6 +5,7 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u8)]
+#[non_exhaustive]
 pub enum Status {
     /// Pending status indicates that the task has not yet been started.
     #[default]
