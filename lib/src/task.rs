@@ -8,11 +8,11 @@ use uuid::Uuid;
 pub enum Status {
     /// Pending status indicates that the task has not yet been started.
     #[default]
-    Pending,
+    Pending = 0,
     /// In Progress status indicates that the task is currently being worked on.
-    InProgress,
+    InProgress = 1,
     /// Completed status indicates that the task has been finished.
-    Completed,
+    Completed = 2,
 }
 
 impl Status {
@@ -71,6 +71,9 @@ impl<'de> serde::Deserialize<'de> for Task {
 
         let helper = TaskHelper::deserialize(deserializer)?;
 
+        if helper.id.is_nil() {
+            return Err(serde::de::Error::custom("task id cannot be nil"));
+        }
         if helper.name.trim().is_empty() {
             return Err(serde::de::Error::custom("task name cannot be empty"));
         }
@@ -251,6 +254,9 @@ impl Task {
     /// assert_eq!(task.status(), Status::InProgress);
     /// ```
     pub fn set_status(&mut self, status: Status) {
+        if self.status == status {
+            return;
+        }
         #[cfg(feature = "log")]
         {
             let old = std::mem::replace(&mut self.status, status);
@@ -320,6 +326,15 @@ mod tests {
         task.set_status(Status::Completed);
         assert_eq!(task.status(), Status::Completed);
         assert!(task.is_completed());
+    }
+
+    #[test]
+    fn test_setting_same_status_is_a_no_op() {
+        let mut task = Task::new("Same Status Test").expect("valid task name");
+
+        task.set_status(Status::Pending);
+
+        assert_eq!(task.status(), Status::Pending);
     }
 
     #[test]
@@ -444,6 +459,21 @@ mod tests {
 
             assert!(result.is_err(), "expected invalid name to be rejected: {name:?}");
         }
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_serde_rejects_nil_ids() {
+        let serialized = serde_json::json!({
+            "id": "00000000-0000-0000-0000-000000000000",
+            "name": "Valid name",
+            "description": null,
+            "status": "Pending"
+        });
+
+        let result = serde_json::from_value::<Task>(serialized);
+
+        assert!(result.is_err(), "expected nil task id to be rejected");
     }
 
     #[test]

@@ -11,7 +11,7 @@ pub enum TaskError {
     /// The task name is empty or contains only whitespace.
     #[error("task name cannot be empty")]
     EmptyName,
-    /// The task contains a invalid status value.
+    /// The task contains an invalid status value.
     #[error("invalid status value: {0}")]
     InvalidStatusValue(u8),
 }
