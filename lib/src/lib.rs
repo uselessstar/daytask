@@ -19,6 +19,8 @@ compile_error!("either feature `v4` or feature `v7` must be enabled");
 
 #[macro_use]
 mod macros;
+mod errors;
 mod task;
 
-pub use task::{Task, TaskError};
+pub use errors::TaskError;
+pub use task::Task;
