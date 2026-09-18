@@ -117,7 +117,7 @@ impl Task {
         }
         #[cfg(not(feature = "log"))]
         {
-            self.name = name.into();
+            self.name = name;
         }
         Ok(())
     }
@@ -137,14 +137,15 @@ impl Task {
     /// assert_eq!(task.description(), Some("This is a description"));
     /// ```
     pub fn set_description(&mut self, description: impl Into<String>) {
+        let description = description.into();
         #[cfg(feature = "log")]
         {
-            let old = self.description.replace(description.into());
+            let old = self.description.replace(description);
             debug_log!(target: "task", "task description changed: id={}, old={:?}, new={:?}", self.id, old, self.description);
         }
         #[cfg(not(feature = "log"))]
         {
-            self.description = Some(description.into());
+            self.description = Some(description);
         }
     }
 
