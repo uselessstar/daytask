@@ -2,11 +2,12 @@ use crate::TaskError;
 use uuid::Uuid;
 
 /// todo
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u8)]
 pub enum Status {
     /// todo
+    #[default]
     Pending,
     /// todo
     InProgress,
@@ -80,7 +81,7 @@ impl Task {
             id,
             name,
             description: None,
-            status: Status::Pending,
+            status: Status::default(),
         };
         debug_log!(target: "task", "task created: {:#?}", task);
         Ok(task)
@@ -246,6 +247,38 @@ mod tests {
 
         assert_eq!(task.name(), "Test Task");
         assert_ne!(task.id(), Uuid::nil());
+        assert_eq!(task.status(), Status::Pending);
+        assert!(task.is_pending());
+        assert!(!task.is_in_progress());
+        assert!(!task.is_completed());
+    }
+
+    #[test]
+    fn test_status_predicates() {
+        assert!(Status::Pending.is_pending());
+        assert!(!Status::Pending.is_in_progress());
+        assert!(!Status::Pending.is_completed());
+
+        assert!(!Status::InProgress.is_pending());
+        assert!(Status::InProgress.is_in_progress());
+        assert!(!Status::InProgress.is_completed());
+
+        assert!(!Status::Completed.is_pending());
+        assert!(!Status::Completed.is_in_progress());
+        assert!(Status::Completed.is_completed());
+    }
+
+    #[test]
+    fn test_status_can_be_changed() {
+        let mut task = Task::new("Status Test").expect("valid task name");
+
+        task.set_status(Status::InProgress);
+        assert_eq!(task.status(), Status::InProgress);
+        assert!(task.is_in_progress());
+
+        task.set_status(Status::Completed);
+        assert_eq!(task.status(), Status::Completed);
+        assert!(task.is_completed());
     }
 
     #[test]
@@ -273,6 +306,17 @@ mod tests {
         task.set_name("Updated Name").expect("valid task name");
 
         assert_eq!(task.name(), "Updated Name");
+    }
+
+    #[test]
+    fn test_setting_same_name_is_a_no_op() {
+        let mut task = Task::new("Same Name").expect("valid task name");
+        let id = task.id();
+
+        task.set_name("Same Name").expect("valid task name");
+
+        assert_eq!(task.name(), "Same Name");
+        assert_eq!(task.id(), id);
     }
 
     #[test]
