@@ -1,12 +1,6 @@
 use thiserror::Error;
 use uuid::Uuid;
 
-#[cfg(all(feature = "v4", feature = "v7"))]
-compile_error!("features `v4` and `v7` cannot be enabled at the same time");
-
-#[cfg(not(any(feature = "v4", feature = "v7")))]
-compile_error!("either feature `v4` or feature `v7` must be enabled");
-
 /// Errors that can occur while creating or updating a [`Task`].
 #[derive(Debug, Error, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
