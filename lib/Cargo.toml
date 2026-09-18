@@ -24,9 +24,11 @@ uuid = { version = "1.26.1", features = ["v7"] }
 serde_json = "1.0.151"
 
 [features]
-default = ["log"]
+default = ["log", "v7"]
 log = ["dep:log"]
 serde = ["dep:serde", "log/serde", "uuid/serde"]
+v4 = ["uuid/v4"]
+v7 = ["uuid/v7"]
 
 [lints.clippy]
 allow_attributes = "deny"
