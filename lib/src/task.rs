@@ -14,6 +14,23 @@ pub enum Status {
     Completed,
 }
 
+impl Status {
+    /// todo
+    pub fn is_pending(&self) -> bool {
+        matches!(self, Status::Pending)
+    }
+
+    /// todo
+    pub fn is_in_progress(&self) -> bool {
+        matches!(self, Status::InProgress)
+    }
+
+    /// todo
+    pub fn is_completed(&self) -> bool {
+        matches!(self, Status::Completed)
+    }
+}
+
 /// todo
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -77,6 +94,11 @@ impl Task {
     /// Returns the name of the [task](Task).
     pub fn name(&self) -> &str {
         &self.name
+    }
+
+    /// Returns the status of the [task](Task).
+    pub fn status(&self) -> Status {
+        self.status
     }
 
     /// Returns the description of the [task](Task).
@@ -170,6 +192,47 @@ impl Task {
         {
             self.description = None;
         }
+    }
+
+    /// Sets the status of the [task](Task).
+    ///
+    /// # Arguments
+    /// - **status**: The new status to set.
+    ///
+    /// # Example
+    /// ```
+    /// # use daytask::{Task, Status};
+    /// #
+    /// let mut task = Task::new("example").expect("valid task name");
+    /// task.set_status(Status::InProgress);
+    ///
+    /// assert_eq!(task.status(), Status::InProgress);
+    /// ```
+    pub fn set_status(&mut self, status: Status) {
+        #[cfg(feature = "log")]
+        {
+            let old = std::mem::replace(&mut self.status, status);
+            debug_log!(target: "task", "task status changed: id={}, old={:?}, new={:?}", self.id, old, self.status);
+        }
+        #[cfg(not(feature = "log"))]
+        {
+            self.status = status;
+        }
+    }
+
+    /// Returns true if the [task](Task) is pending.
+    pub fn is_pending(&self) -> bool {
+        self.status.is_pending()
+    }
+
+    /// Returns true if the [task](Task) is in progress.
+    pub fn is_in_progress(&self) -> bool {
+        self.status.is_in_progress()
+    }
+
+    /// Returns true if the [task](Task) is completed.
+    pub fn is_completed(&self) -> bool {
+        self.status.is_completed()
     }
 }
 
