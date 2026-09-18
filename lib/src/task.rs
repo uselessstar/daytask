@@ -187,6 +187,17 @@ mod tests {
     }
 
     #[test]
+    fn test_id_version_matches_feature() {
+        let task = Task::new("UUID Version Test").expect("valid task name");
+
+        #[cfg(feature = "v4")]
+        assert_eq!(task.id().get_version(), Some(uuid::Version::Random));
+
+        #[cfg(feature = "v7")]
+        assert_eq!(task.id().get_version(), Some(uuid::Version::SortRand));
+    }
+
+    #[test]
     fn test_unique_ids() {
         let task1 = Task::new("Task #1").expect("valid task name");
         let task2 = Task::new("Task #2").expect("valid task name");
