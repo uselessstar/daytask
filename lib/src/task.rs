@@ -202,16 +202,20 @@ impl Task {
     ///
     /// assert_eq!(task.description(), Some("This is a description"));
     /// ```
-    pub fn set_description(&mut self, description: impl Into<String>) {
-        let description = description.into();
+    pub fn set_description(&mut self, description: impl AsRef<str>) {
+        let description = description.as_ref();
+        if self.description.as_deref() == Some(description) {
+            return;
+        }
+
         #[cfg(feature = "log")]
         {
-            let old = self.description.replace(description);
+            let old = self.description.replace(description.to_string());
             debug_log!(target: "task", "task description changed: id={}, old={:?}, new={:?}", self.id, old, self.description);
         }
         #[cfg(not(feature = "log"))]
         {
-            self.description = Some(description);
+            self.description = Some(description.to_string());
         }
     }
 
@@ -393,6 +397,19 @@ mod tests {
         task.set_description("Task details");
 
         assert_eq!(task.description(), Some("Task details"));
+    }
+
+    #[test]
+    fn test_setting_same_description_is_a_no_op() {
+        let mut task = Task::new("Description Noop Test").expect("valid task name");
+
+        task.set_description("Same description");
+        let id = task.id();
+
+        task.set_description("Same description");
+
+        assert_eq!(task.id(), id);
+        assert_eq!(task.description(), Some("Same description"));
     }
 
     #[test]
