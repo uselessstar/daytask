@@ -99,19 +99,22 @@ impl Task {
     ///
     /// assert_eq!(task.name(), "example 2");
     /// ```
-    pub fn set_name(&mut self, name: impl Into<String>) -> Result<(), TaskError> {
-        let name = name.into();
+    pub fn set_name(&mut self, name: impl AsRef<str>) -> Result<(), TaskError> {
+        let name = name.as_ref();
         if name.trim().is_empty() {
             return Err(TaskError::EmptyName);
         }
+        if self.name == name {
+            return Ok(());
+        }
         #[cfg(feature = "log")]
         {
-            let old = std::mem::replace(&mut self.name, name);
+            let old = std::mem::replace(&mut self.name, name.into());
             debug_log!(target: "task", "task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
         }
         #[cfg(not(feature = "log"))]
         {
-            self.name = name;
+            self.name = name.into();
         }
         Ok(())
     }
