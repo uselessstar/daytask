@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-/// Errors that can occur while creating or updating a [`Task`].
+/// Errors that can occur while creating or updating a [Task](crate::Task).
 #[derive(Debug, Error, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[expect(
