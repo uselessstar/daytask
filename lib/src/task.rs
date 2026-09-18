@@ -1,38 +1,38 @@
 use crate::TaskError;
 use uuid::Uuid;
 
-/// todo
+/// Indicates the current status of a [task](Task).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u8)]
 pub enum Status {
-    /// todo
+    /// Pending status indicates that the task has not yet been started.
     #[default]
     Pending,
-    /// todo
+    /// In Progress status indicates that the task is currently being worked on.
     InProgress,
-    /// todo
+    /// Completed status indicates that the task has been finished.
     Completed,
 }
 
 impl Status {
-    /// todo
+    /// Returns `true` if the status is [Pending](Status::Pending), `false` otherwise.
     pub fn is_pending(&self) -> bool {
         matches!(self, Status::Pending)
     }
 
-    /// todo
+    /// Returns `true` if the status is [InProgress](Status::InProgress), `false` otherwise.
     pub fn is_in_progress(&self) -> bool {
         matches!(self, Status::InProgress)
     }
 
-    /// todo
+    /// Returns `true` if the status is [Completed](Status::Completed), `false` otherwise.
     pub fn is_completed(&self) -> bool {
         matches!(self, Status::Completed)
     }
 }
 
-/// todo
+/// Represents a task with a unique identifier, name, optional description, and status.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Task {
