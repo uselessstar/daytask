@@ -47,12 +47,40 @@ impl TryFrom<u8> for Status {
 
 /// Represents a task with a unique identifier, name, optional description, and status.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct Task {
     id: Uuid,
     name: String,
     description: Option<String>,
     status: Status,
+}
+
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for Task {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[derive(serde::Deserialize)]
+        struct TaskHelper {
+            id: Uuid,
+            name: String,
+            description: Option<String>,
+            status: Status,
+        }
+
+        let helper = TaskHelper::deserialize(deserializer)?;
+
+        if helper.name.trim().is_empty() {
+            return Err(serde::de::Error::custom("task name cannot be empty"));
+        }
+        Ok(Task {
+            id: helper.id,
+            name: helper.name,
+            description: helper.description,
+            status: helper.status,
+        })
+    }
 }
 
 impl Task {
@@ -399,6 +427,23 @@ mod tests {
         let deserialized: Task = serde_json::from_str(&serialized).expect("deserialization failed");
 
         assert_eq!(task, deserialized);
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_serde_rejects_empty_names() {
+        for name in ["", "   "] {
+            let serialized = serde_json::json!({
+                "id": "00000000-0000-0000-0000-000000000001",
+                "name": name,
+                "description": null,
+                "status": "Pending"
+            });
+
+            let result = serde_json::from_value::<Task>(serialized);
+
+            assert!(result.is_err(), "expected invalid name to be rejected: {name:?}");
+        }
     }
 
     #[test]
