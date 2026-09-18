@@ -34,10 +34,15 @@ v7 = ["uuid/v7"]
 [lints.clippy]
 allow_attributes = "deny"
 allow_attributes_without_reason = "warn"
+complexity = { level = "warn", priority = -1 }
 correctness = { level = "deny", priority = -1 }
+manual_non_exhaustive = "warn"
 missing_errors_doc = "warn"
+missing_panics_doc = "warn"
+missing_safety_doc = "warn"
 perf = { level = "warn", priority = -1 }
 suspicious = { level = "warn", priority = -1 }
+too_many_lines = "warn"
 
 [lints.rust]
 missing_copy_implementations = "warn"
