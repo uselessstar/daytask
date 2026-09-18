@@ -1,6 +1,15 @@
 use crate::TaskError;
 use uuid::Uuid;
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[repr(u8)]
+pub enum Status {
+    Pending,
+    InProgress,
+    Completed,
+}
+
 /// todo
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -8,6 +17,7 @@ pub struct Task {
     id: Uuid,
     name: String,
     description: Option<String>,
+    status: Status,
 }
 
 impl Task {
@@ -49,6 +59,7 @@ impl Task {
             id,
             name,
             description: None,
+            status: Status::Pending,
         };
         debug_log!(target: "task", "task created: {:#?}", task);
         Ok(task)
