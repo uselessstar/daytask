@@ -223,6 +223,9 @@ impl Task {
     /// ```
     #[inline]
     pub fn clear_description(&mut self) {
+        if self.description.is_none() {
+            return;
+        }
         #[cfg(feature = "log")]
         {
             let old = self.description.take();
