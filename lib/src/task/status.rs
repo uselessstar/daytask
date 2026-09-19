@@ -4,7 +4,7 @@ use core::str::FromStr;
 
 type Result<T> = core::result::Result<T, StatusError>;
 
-/// Indicates the current status of a [task](Task).
+/// Indicates the current status of a [task](crate::Task).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[repr(u8)]
