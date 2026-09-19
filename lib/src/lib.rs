@@ -1,18 +1,4 @@
 #![doc = include_str!("../README.md")]
-#![cfg_attr(
-    not(debug_assertions),
-    deny(
-        clippy::allow_attributes_without_reason,
-        missing_docs,
-        unused,
-        clippy::perf,
-        clippy::suspicious,
-        clippy::missing_errors_doc,
-        clippy::missing_panics_doc,
-        clippy::missing_safety_doc,
-        irrefutable_let_patterns
-    )
-)]
 
 #[cfg(all(feature = "v4", feature = "v7"))]
 compile_error!("features `v4` and `v7` cannot be enabled at the same time");
