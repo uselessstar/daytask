@@ -11,5 +11,5 @@ mod macros;
 mod errors;
 mod task;
 
-pub use errors::TaskError;
+pub use errors::{StatusError, TaskError};
 pub use task::{Status, Task};
