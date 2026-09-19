@@ -45,6 +45,7 @@ suspicious = { level = "warn", priority = -1 }
 too_many_lines = "warn"
 
 [lints.rust]
+irrefutable_let_patterns = "warn"
 missing_copy_implementations = "warn"
 missing_debug_implementations = "deny"
 missing_docs = "warn"
