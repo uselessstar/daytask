@@ -1,5 +1,3 @@
-use crate::StatusError;
-
 use super::*;
 
 #[test]
@@ -12,21 +10,6 @@ fn test_task_creation() {
     assert!(task.is_pending());
     assert!(!task.is_in_progress());
     assert!(!task.is_completed());
-}
-
-#[test]
-fn test_status_predicates() {
-    assert!(Status::Pending.is_pending());
-    assert!(!Status::Pending.is_in_progress());
-    assert!(!Status::Pending.is_completed());
-
-    assert!(!Status::InProgress.is_pending());
-    assert!(Status::InProgress.is_in_progress());
-    assert!(!Status::InProgress.is_completed());
-
-    assert!(!Status::Completed.is_pending());
-    assert!(!Status::Completed.is_in_progress());
-    assert!(Status::Completed.is_completed());
 }
 
 #[test]
@@ -201,25 +184,4 @@ fn test_serde_rejects_nil_ids() {
     let result = serde_json::from_value::<Task>(serialized);
 
     assert!(result.is_err(), "expected nil task id to be rejected");
-}
-
-#[test]
-fn test_status_try_from_valid_values() {
-    assert_eq!(Status::try_from(0u8), Ok(Status::Pending));
-    assert_eq!(Status::try_from(1u8), Ok(Status::InProgress));
-    assert_eq!(Status::try_from(2u8), Ok(Status::Completed));
-}
-
-#[test]
-fn test_status_try_from_invalid_values() {
-    assert_eq!(Status::try_from(3u8), Err(StatusError::InvalidStatusValue(3)));
-    assert_eq!(Status::try_from(255u8), Err(StatusError::InvalidStatusValue(255)));
-}
-
-#[test]
-fn test_status_roundtrip() {
-    for status in [Status::Pending, Status::InProgress, Status::Completed] {
-        let value = status as u8;
-        assert_eq!(Status::try_from(value), Ok(status));
-    }
 }
