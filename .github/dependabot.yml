@@ -10,3 +10,4 @@ updates:
     commit-message:
       prefix: "deps"
     versioning-strategy: auto
+    target-branch: dev
