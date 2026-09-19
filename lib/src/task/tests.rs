@@ -28,10 +28,28 @@ fn test_status_can_be_changed() {
 #[test]
 fn test_setting_same_status_is_a_no_op() {
     let mut task = Task::new("Same Status Test").expect("valid task name");
+    let id = task.id();
 
     task.set_status(Status::Pending);
 
     assert_eq!(task.status(), Status::Pending);
+    assert_eq!(task.id(), id);
+}
+
+#[test]
+fn test_task_display_without_description() {
+    let task = Task::new("Display Test").expect("valid task name");
+
+    assert_eq!(task.to_string(), "Display Test [Pending]");
+}
+
+#[test]
+fn test_task_display_with_description() {
+    let mut task = Task::new("Display Test").expect("valid task name");
+    task.set_status(Status::Completed);
+    task.set_description("Task details");
+
+    assert_eq!(task.to_string(), "Display Test [Completed]: Task details");
 }
 
 #[test]
@@ -156,6 +174,18 @@ fn test_serde_serialization() {
 
 #[cfg(feature = "serde")]
 #[test]
+fn test_serde_serialization_without_description() {
+    let task = Task::new("Serde Test").expect("valid task name");
+    let serialized = serde_json::to_value(&task).expect("serialization failed");
+
+    assert_eq!(serialized["id"], task.id().to_string());
+    assert_eq!(serialized["name"], "Serde Test");
+    assert_eq!(serialized["description"], serde_json::Value::Null);
+    assert_eq!(serialized["status"], "Pending");
+}
+
+#[cfg(feature = "serde")]
+#[test]
 fn test_serde_rejects_empty_names() {
     for name in ["", "   "] {
         let serialized = serde_json::json!({
@@ -184,4 +214,32 @@ fn test_serde_rejects_nil_ids() {
     let result = serde_json::from_value::<Task>(serialized);
 
     assert!(result.is_err(), "expected nil task id to be rejected");
+}
+
+#[cfg(feature = "serde")]
+#[test]
+fn test_serde_rejects_invalid_statuses_and_fields() {
+    let invalid_values = [
+        serde_json::json!({
+            "id": "00000000-0000-0000-0000-000000000001",
+            "name": "Valid name",
+            "description": null,
+            "status": "Unknown"
+        }),
+        serde_json::json!({
+            "id": "not-a-uuid",
+            "name": "Valid name",
+            "description": null,
+            "status": "Pending"
+        }),
+        serde_json::json!({
+            "id": "00000000-0000-0000-0000-000000000001",
+            "description": null,
+            "status": "Pending"
+        }),
+    ];
+
+    for value in invalid_values {
+        assert!(serde_json::from_value::<Task>(value).is_err());
+    }
 }
