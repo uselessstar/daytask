@@ -43,6 +43,7 @@ missing_safety_doc = "warn"
 perf = { level = "warn", priority = -1 }
 suspicious = { level = "warn", priority = -1 }
 too_many_lines = "warn"
+use_self = "warn"
 
 [lints.rust]
 irrefutable_let_patterns = "warn"

@@ -20,19 +20,19 @@ impl Status {
     /// Returns `true` if the status is [Pending](Status::Pending), `false` otherwise.
     #[must_use]
     pub fn is_pending(&self) -> bool {
-        matches!(self, Status::Pending)
+        matches!(self, Self::Pending)
     }
 
     /// Returns `true` if the status is [InProgress](Status::InProgress), `false` otherwise.
     #[must_use]
     pub fn is_in_progress(&self) -> bool {
-        matches!(self, Status::InProgress)
+        matches!(self, Self::InProgress)
     }
 
     /// Returns `true` if the status is [Completed](Status::Completed), `false` otherwise.
     #[must_use]
     pub fn is_completed(&self) -> bool {
-        matches!(self, Status::Completed)
+        matches!(self, Self::Completed)
     }
 }
 
@@ -41,9 +41,9 @@ impl TryFrom<u8> for Status {
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
-            x if x == Status::Pending as u8 => Ok(Status::Pending),
-            x if x == Status::InProgress as u8 => Ok(Status::InProgress),
-            x if x == Status::Completed as u8 => Ok(Status::Completed),
+            x if x == Self::Pending as u8 => Ok(Self::Pending),
+            x if x == Self::InProgress as u8 => Ok(Self::InProgress),
+            x if x == Self::Completed as u8 => Ok(Self::Completed),
             _ => Err(TaskError::InvalidStatusValue(value)),
         }
     }
@@ -81,7 +81,7 @@ impl<'de> serde::Deserialize<'de> for Task {
         if helper.name.trim().is_empty() {
             return Err(serde::de::Error::custom("task name cannot be empty"));
         }
-        Ok(Task {
+        Ok(Self {
             id: helper.id,
             name: helper.name,
             description: helper.description,
