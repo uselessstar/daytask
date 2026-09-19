@@ -1,0 +1,45 @@
+name: Check Rust Code
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main", "dev"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  validate:
+    name: Validate (${{ matrix.features }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        features: ["v4", "v7"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          prefix-key: "${{ matrix.features }}"
+          workspaces: "lib"
+
+      - name: Check formatting
+        working-directory: lib
+        run: cargo fmt --all -- --check
+
+      - name: Run clippy
+        working-directory: lib
+        run: cargo clippy --all-targets --no-default-features --features "${{ matrix.features }} serde log" -- -D warnings
+
+      - name: Run tests
+        working-directory: lib
+        run: cargo test --no-default-features --features "${{ matrix.features }} serde log"

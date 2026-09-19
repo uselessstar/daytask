@@ -1,7 +1,8 @@
 [package]
 name = "daytask"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2024"
+rust-version = "1.85.0"
 description = "todo"
 repository = "https://github.com/uselessstar/daytask"
 license = "ISC"
@@ -14,14 +15,68 @@ name = "daytask"
 path = "src/lib.rs"
 test = true
 
+[dependencies]
+log = { version = "0.4.34", optional = true }
+serde = { version = "1.0.229", features = ["derive"], optional = true }
+thiserror = "2.0.20"
+uuid = { version = "1.26.1", features = ["default"] }
+
+[dev-dependencies]
+serde_json = "1.0.151"
+
+[features]
+default = ["log", "v7"]
+log = ["dep:log"]
+serde = ["dep:serde", "log/serde", "uuid/serde"]
+v4 = ["uuid/v4"]
+v7 = ["uuid/v7"]
+
 [lints.clippy]
+alloc_instead_of_core = "warn"
 allow_attributes = "deny"
 allow_attributes_without_reason = "warn"
-correctness = { level = "forbid", priority = -1 }
+assigning_clones = "warn"
+branches_sharing_code = "warn"
+complexity = { level = "warn", priority = -1 }
+correctness = { level = "deny", priority = -1 }
+crate_in_macro_def = "warn"
+dbg_macro = "warn"
+empty_docs = "warn"
+empty_drop = "warn"
+empty_enums = "warn"
+empty_loop = "deny"
+empty_structs_with_brackets = "warn"
+if_not_else = "warn"
+inefficient_to_string = "warn"
+inline_always = "warn"
+let_underscore_must_use = "warn"
+manual_non_exhaustive = "warn"
+missing_errors_doc = "warn"
+missing_inline_in_public_items = "warn"
+missing_panics_doc = "warn"
+missing_safety_doc = "warn"
+must_use_candidate = "warn"
+perf = { level = "warn", priority = -1 }
+return_self_not_must_use = "warn"
+should_panic_without_expect = "warn"
+std_instead_of_core = "warn"
+str_to_string = "warn"
+style = { level = "warn", priority = -1 }
+suspicious = { level = "warn", priority = -1 }
+temporary_assignment = "warn"
+too_many_lines = "warn"
+trivially_copy_pass_by_ref = "warn"
+unnecessary_safety_comment = "warn"
+unnecessary_safety_doc = "warn"
+unreadable_literal = "warn"
+unsafe_derive_deserialize = "warn"
+use_self = "warn"
 
 [lints.rust]
+irrefutable_let_patterns = "warn"
+large_assignments = "warn"
 missing_copy_implementations = "warn"
 missing_debug_implementations = "deny"
 missing_docs = "warn"
 unused = { level = "warn", priority = -1 }
-warnings = "warn"
+variant_size_differences = "warn"
