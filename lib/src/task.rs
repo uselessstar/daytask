@@ -56,6 +56,13 @@ impl TryFrom<u8> for Status {
     }
 }
 
+impl From<Status> for u8 {
+    #[inline]
+    fn from(status: Status) -> Self {
+        status as Self
+    }
+}
+
 /// Represents a task with a unique identifier, name, optional description, and status.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
