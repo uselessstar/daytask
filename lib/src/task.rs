@@ -1,4 +1,5 @@
-use std::fmt::Display;
+use core::fmt;
+use std::fmt::{Display, Formatter};
 
 use crate::TaskError;
 use uuid::Uuid;
@@ -96,6 +97,17 @@ pub struct Task {
     name: String,
     description: Option<String>,
     status: Status,
+}
+
+impl Display for Task {
+    #[inline]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{} [{}]", self.name, self.status)?;
+        if let Some(desc) = self.description.as_deref() {
+            write!(f, ": {desc}")?;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(feature = "serde")]
