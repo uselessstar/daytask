@@ -6,11 +6,16 @@ on:
   pull_request:
     branches: ["main", "dev"]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
+  validate:
+    name: Validate (v${{ matrix.features }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -21,40 +26,20 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - uses: actions/cache@v6
+
+      - uses: swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ matrix.features }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-${{ matrix.features }}-
-            ${{ runner.os }}-cargo-
+          prefix-key: "v${{ matrix.features }}"
+          workspaces: "lib"
+
       - name: Check formatting
         working-directory: lib
         run: cargo fmt --all -- --check
+
       - name: Run clippy
         working-directory: lib
         run: cargo clippy --all-targets --no-default-features --features ${{ matrix.features }} -- -D warnings
 
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        features: ["v4", "v7"]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ matrix.features }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-${{ matrix.features }}-
-            ${{ runner.os }}-cargo-
       - name: Run tests
         working-directory: lib
         run: cargo test --no-default-features --features ${{ matrix.features }}
