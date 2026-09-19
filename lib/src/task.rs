@@ -77,6 +77,17 @@ impl Display for Status {
     }
 }
 
+impl AsRef<str> for Status {
+    #[inline]
+    fn as_ref(&self) -> &str {
+        match self {
+            Self::Pending => "Pending",
+            Self::InProgress => "In Progress",
+            Self::Completed => "Completed",
+        }
+    }
+}
+
 /// Represents a task with a unique identifier, name, optional description, and status.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
