@@ -213,4 +213,48 @@ mod tests {
                 .contains("invalid status string: Unknown")
         );
     }
+    #[test]
+    fn test_status_default() {
+        assert_eq!(Status::default(), Status::Pending);
+    }
+
+    #[test]
+    fn test_status_display() {
+        assert_eq!(format!("{}", Status::Pending), "Pending");
+        assert_eq!(format!("{}", Status::InProgress), "In Progress");
+        assert_eq!(format!("{}", Status::Completed), "Completed");
+    }
+
+    #[test]
+    fn test_status_as_ref() {
+        assert_eq!(Status::Pending.as_ref(), "Pending");
+        assert_eq!(Status::InProgress.as_ref(), "In Progress");
+        assert_eq!(Status::Completed.as_ref(), "Completed");
+    }
+
+    #[test]
+    fn test_status_from_into_u8() {
+        assert_eq!(u8::from(Status::Pending), 0);
+        assert_eq!(u8::from(Status::InProgress), 1);
+        assert_eq!(u8::from(Status::Completed), 2);
+    }
+
+    #[test]
+    fn test_status_from_str_invalid() {
+        let result = Status::from_str("Invalido");
+        assert!(result.is_err());
+        assert!(matches!(result, Err(StatusError::InvalidStatusString(_))));
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_status_deserialize_valid() {
+        let json_strs = ["\"Pending\"", "\"In Progress\"", "\"Completed\""];
+        let expected = [Status::Pending, Status::InProgress, Status::Completed];
+
+        for (json_str, expected_status) in json_strs.iter().zip(expected.iter()) {
+            let status: Status = serde_json::from_str(json_str).unwrap();
+            assert_eq!(status, *expected_status);
+        }
+    }
 }
