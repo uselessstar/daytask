@@ -19,31 +19,35 @@ pub enum Status {
 impl Status {
     /// Returns `true` if the status is [Pending](Status::Pending), `false` otherwise.
     #[must_use]
+    #[inline]
     pub fn is_pending(&self) -> bool {
-        matches!(self, Status::Pending)
+        matches!(self, Self::Pending)
     }
 
     /// Returns `true` if the status is [InProgress](Status::InProgress), `false` otherwise.
+    #[inline]
     #[must_use]
     pub fn is_in_progress(&self) -> bool {
-        matches!(self, Status::InProgress)
+        matches!(self, Self::InProgress)
     }
 
     /// Returns `true` if the status is [Completed](Status::Completed), `false` otherwise.
+    #[inline]
     #[must_use]
     pub fn is_completed(&self) -> bool {
-        matches!(self, Status::Completed)
+        matches!(self, Self::Completed)
     }
 }
 
 impl TryFrom<u8> for Status {
     type Error = TaskError;
 
+    #[inline]
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
-            x if x == Status::Pending as u8 => Ok(Status::Pending),
-            x if x == Status::InProgress as u8 => Ok(Status::InProgress),
-            x if x == Status::Completed as u8 => Ok(Status::Completed),
+            x if x == Self::Pending as u8 => Ok(Self::Pending),
+            x if x == Self::InProgress as u8 => Ok(Self::InProgress),
+            x if x == Self::Completed as u8 => Ok(Self::Completed),
             _ => Err(TaskError::InvalidStatusValue(value)),
         }
     }
@@ -61,6 +65,7 @@ pub struct Task {
 
 #[cfg(feature = "serde")]
 impl<'de> serde::Deserialize<'de> for Task {
+    #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -81,7 +86,7 @@ impl<'de> serde::Deserialize<'de> for Task {
         if helper.name.trim().is_empty() {
             return Err(serde::de::Error::custom("task name cannot be empty"));
         }
-        Ok(Task {
+        Ok(Self {
             id: helper.id,
             name: helper.name,
             description: helper.description,
@@ -108,6 +113,7 @@ impl Task {
     ///
     /// assert_eq!(clone_task,task);
     /// ```
+    #[inline]
     pub fn new(name: impl Into<String>) -> Result<Self, TaskError> {
         let name = name.into();
         if name.trim().is_empty() {
@@ -137,24 +143,28 @@ impl Task {
 
     /// Returns the id of the [task](Task).
     #[must_use]
+    #[inline]
     pub fn id(&self) -> Uuid {
         self.id
     }
 
     /// Returns the name of the [task](Task).
     #[must_use]
+    #[inline]
     pub fn name(&self) -> &str {
         &self.name
     }
 
     /// Returns the status of the [task](Task).
     #[must_use]
+    #[inline]
     pub fn status(&self) -> Status {
         self.status
     }
 
     /// Returns the description of the [task](Task).
     #[must_use]
+    #[inline]
     pub fn description(&self) -> Option<&str> {
         self.description.as_deref()
     }
@@ -176,6 +186,7 @@ impl Task {
     ///
     /// assert_eq!(task.name(), "example 2");
     /// ```
+    #[inline]
     pub fn set_name(&mut self, name: impl AsRef<str>) -> Result<(), TaskError> {
         let name = name.as_ref();
         if name.trim().is_empty() {
@@ -210,6 +221,7 @@ impl Task {
     ///
     /// assert_eq!(task.description(), Some("This is a description"));
     /// ```
+    #[inline]
     pub fn set_description(&mut self, description: impl AsRef<str>) {
         let description = description.as_ref();
         if self.description.as_deref() == Some(description) {
@@ -218,12 +230,12 @@ impl Task {
 
         #[cfg(feature = "log")]
         {
-            let old = self.description.replace(description.to_string());
+            let old = self.description.replace(description.to_owned());
             debug_log!(target: "task", "task description changed: id={}, old={:?}, new={:?}", self.id, old, self.description);
         }
         #[cfg(not(feature = "log"))]
         {
-            self.description = Some(description.to_string());
+            self.description = Some(description.to_owned());
         }
     }
 
@@ -239,6 +251,7 @@ impl Task {
     ///
     /// assert_eq!(task.description(), None);
     /// ```
+    #[inline]
     pub fn clear_description(&mut self) {
         #[cfg(feature = "log")]
         {
@@ -265,6 +278,7 @@ impl Task {
     ///
     /// assert_eq!(task.status(), Status::InProgress);
     /// ```
+    #[inline]
     pub fn set_status(&mut self, status: Status) {
         if self.status == status {
             return;
@@ -281,6 +295,7 @@ impl Task {
     }
 
     /// Returns true if the [task](Task) is pending.
+    #[inline]
     #[must_use]
     pub fn is_pending(&self) -> bool {
         self.status.is_pending()
@@ -288,12 +303,14 @@ impl Task {
 
     /// Returns true if the [task](Task) is in progress.
     #[must_use]
+    #[inline]
     pub fn is_in_progress(&self) -> bool {
         self.status.is_in_progress()
     }
 
     /// Returns true if the [task](Task) is completed.
     #[must_use]
+    #[inline]
     pub fn is_completed(&self) -> bool {
         self.status.is_completed()
     }
