@@ -235,7 +235,7 @@ impl Task {
         }
         #[cfg(not(feature = "log"))]
         {
-            self.description = Some(description.to_string());
+            self.description = Some(description.to_owned());
         }
     }
 
