@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::TaskError;
 use uuid::Uuid;
 
@@ -60,6 +62,18 @@ impl From<Status> for u8 {
     #[inline]
     fn from(status: Status) -> Self {
         status as Self
+    }
+}
+
+impl Display for Status {
+    #[inline]
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let status_str = match self {
+            Self::Pending => "Pending",
+            Self::InProgress => "In Progress",
+            Self::Completed => "Completed",
+        };
+        write!(f, "{}", status_str)
     }
 }
 
