@@ -86,9 +86,9 @@ impl TryFrom<u8> for Status {
     #[inline]
     fn try_from(value: u8) -> Result<Self> {
         match value {
-            x if x == Self::Pending as u8 => Ok(Self::Pending),
-            x if x == Self::InProgress as u8 => Ok(Self::InProgress),
-            x if x == Self::Completed as u8 => Ok(Self::Completed),
+            0 => Ok(Self::Pending),
+            1 => Ok(Self::InProgress),
+            2 => Ok(Self::Completed),
             _ => Err(StatusError::InvalidStatusValue(value)),
         }
     }
@@ -104,12 +104,7 @@ impl From<Status> for u8 {
 impl Display for Status {
     #[inline]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        let status_str = match self {
-            Self::Pending => "Pending",
-            Self::InProgress => "In Progress",
-            Self::Completed => "Completed",
-        };
-        write!(f, "{}", status_str)
+        f.write_str(self.as_ref())
     }
 }
 

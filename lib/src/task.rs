@@ -27,7 +27,8 @@ impl Display for Task {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "{} [{}]", self.name, self.status)?;
         if let Some(desc) = self.description.as_deref() {
-            write!(f, ": {desc}")?;
+            f.write_str(": ")?;
+            f.write_str(desc)?;
         }
         Ok(())
     }
