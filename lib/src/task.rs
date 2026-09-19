@@ -1,6 +1,9 @@
 use crate::TaskError;
 use uuid::Uuid;
 
+/// A specialized [Result] type for task operations.
+type Result<T> = std::result::Result<T, TaskError>;
+
 /// Indicates the current status of a [task](Task).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -43,7 +46,7 @@ impl TryFrom<u8> for Status {
     type Error = TaskError;
 
     #[inline]
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
+    fn try_from(value: u8) -> Result<Self> {
         match value {
             x if x == Self::Pending as u8 => Ok(Self::Pending),
             x if x == Self::InProgress as u8 => Ok(Self::InProgress),
@@ -66,7 +69,7 @@ pub struct Task {
 #[cfg(feature = "serde")]
 impl<'de> serde::Deserialize<'de> for Task {
     #[inline]
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> core::result::Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
@@ -114,7 +117,7 @@ impl Task {
     /// assert_eq!(clone_task,task);
     /// ```
     #[inline]
-    pub fn new(name: impl Into<String>) -> Result<Self, TaskError> {
+    pub fn new(name: impl Into<String>) -> Result<Self> {
         let name = name.into();
         if name.trim().is_empty() {
             return Err(TaskError::EmptyName);
@@ -187,7 +190,7 @@ impl Task {
     /// assert_eq!(task.name(), "example 2");
     /// ```
     #[inline]
-    pub fn set_name(&mut self, name: impl AsRef<str>) -> Result<(), TaskError> {
+    pub fn set_name(&mut self, name: impl AsRef<str>) -> Result<()> {
         let name = name.as_ref();
         if name.trim().is_empty() {
             return Err(TaskError::EmptyName);
