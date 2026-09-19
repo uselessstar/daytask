@@ -1,5 +1,4 @@
-use core::fmt;
-use std::fmt::{Display, Formatter};
+use core::fmt::{self, Display, Formatter};
 
 use crate::TaskError;
 use uuid::Uuid;
@@ -11,7 +10,7 @@ mod tests;
 pub use status::Status;
 
 /// A specialized [Result] type for task operations.
-type Result<T> = std::result::Result<T, TaskError>;
+type Result<T> = core::result::Result<T, TaskError>;
 
 /// Represents a task with a unique identifier, name, optional description, and status.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -168,7 +167,7 @@ impl Task {
         }
         #[cfg(feature = "log")]
         {
-            let old = std::mem::replace(&mut self.name, name.into());
+            let old = core::mem::replace(&mut self.name, name.into());
             debug_log!(target: "task", "task name changed: id={}, old={:?}, new={:?}", self.id, old, self.name);
         }
         #[cfg(not(feature = "log"))]
@@ -256,7 +255,7 @@ impl Task {
         }
         #[cfg(feature = "log")]
         {
-            let old = std::mem::replace(&mut self.status, status);
+            let old = core::mem::replace(&mut self.status, status);
             debug_log!(target: "task", "task status changed: id={}, old={:?}, new={:?}", self.id, old, self.status);
         }
         #[cfg(not(feature = "log"))]

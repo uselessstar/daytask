@@ -1,5 +1,5 @@
 use crate::TaskError;
-use std::fmt::Display;
+use core::fmt::Display;
 
 use super::Result;
 
@@ -64,7 +64,7 @@ impl From<Status> for u8 {
 
 impl Display for Status {
     #[inline]
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         let status_str = match self {
             Self::Pending => "Pending",
             Self::InProgress => "In Progress",
