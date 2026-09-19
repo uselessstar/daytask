@@ -38,8 +38,8 @@ jobs:
 
       - name: Run clippy
         working-directory: lib
-        run: cargo clippy --all-targets --no-default-features --features ${{ matrix.features }} serde log -- -D warnings
+        run: cargo clippy --all-targets --no-default-features --features "${{ matrix.features }} serde log" -- -D warnings
 
       - name: Run tests
         working-directory: lib
-        run: cargo test --no-default-features --features ${{ matrix.features }} serde log
+        run: cargo test --no-default-features --features "${{ matrix.features }} serde log"
