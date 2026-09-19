@@ -1,5 +1,6 @@
 use crate::TaskError;
 use core::fmt::Display;
+use core::str::FromStr;
 
 use super::Result;
 
@@ -81,6 +82,20 @@ impl AsRef<str> for Status {
             Self::Pending => "Pending",
             Self::InProgress => "In Progress",
             Self::Completed => "Completed",
+        }
+    }
+}
+
+impl FromStr for Status {
+    type Err = TaskError;
+
+    #[inline]
+    fn from_str(s: &str) -> Result<Self> {
+        match s {
+            "Pending" => Ok(Self::Pending),
+            "In Progress" => Ok(Self::InProgress),
+            "Completed" => Ok(Self::Completed),
+            _ => Err(TaskError::InvalidStatusString(s.to_owned())),
         }
     }
 }
