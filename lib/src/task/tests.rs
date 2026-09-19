@@ -1,3 +1,5 @@
+use crate::StatusError;
+
 use super::*;
 
 #[test]
@@ -210,8 +212,8 @@ fn test_status_try_from_valid_values() {
 
 #[test]
 fn test_status_try_from_invalid_values() {
-    assert_eq!(Status::try_from(3u8), Err(TaskError::InvalidStatusValue(3)));
-    assert_eq!(Status::try_from(255u8), Err(TaskError::InvalidStatusValue(255)));
+    assert_eq!(Status::try_from(3u8), Err(StatusError::InvalidStatusValue(3)));
+    assert_eq!(Status::try_from(255u8), Err(StatusError::InvalidStatusValue(255)));
 }
 
 #[test]

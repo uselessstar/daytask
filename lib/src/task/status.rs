@@ -1,8 +1,8 @@
-use crate::TaskError;
+use crate::StatusError;
 use core::fmt::Display;
 use core::str::FromStr;
 
-use super::Result;
+type Result<T> = core::result::Result<T, StatusError>;
 
 /// Indicates the current status of a [task](Task).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
@@ -43,7 +43,7 @@ impl Status {
 }
 
 impl TryFrom<u8> for Status {
-    type Error = TaskError;
+    type Error = StatusError;
 
     #[inline]
     fn try_from(value: u8) -> Result<Self> {
@@ -51,7 +51,7 @@ impl TryFrom<u8> for Status {
             x if x == Self::Pending as u8 => Ok(Self::Pending),
             x if x == Self::InProgress as u8 => Ok(Self::InProgress),
             x if x == Self::Completed as u8 => Ok(Self::Completed),
-            _ => Err(TaskError::InvalidStatusValue(value)),
+            _ => Err(StatusError::InvalidStatusValue(value)),
         }
     }
 }
@@ -87,7 +87,7 @@ impl AsRef<str> for Status {
 }
 
 impl FromStr for Status {
-    type Err = TaskError;
+    type Err = StatusError;
 
     #[inline]
     fn from_str(s: &str) -> Result<Self> {
@@ -95,7 +95,7 @@ impl FromStr for Status {
             "Pending" => Ok(Self::Pending),
             "In Progress" => Ok(Self::InProgress),
             "Completed" => Ok(Self::Completed),
-            _ => Err(TaskError::InvalidStatusString(s.to_owned())),
+            _ => Err(StatusError::InvalidStatusString(s.to_owned())),
         }
     }
 }
