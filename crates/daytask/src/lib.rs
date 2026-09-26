@@ -1,3 +1,7 @@
 #![doc = include_str!("../README.md")]
 
-pub struct Task {}
+pub struct Task {
+    id: TaskId,
+}
+
+pub struct TaskId(u64);
