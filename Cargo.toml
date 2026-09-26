@@ -1,0 +1,34 @@
+[workspace]
+package.edition = "2024"
+package.repository = "https://github.com/uselessstar/daytask"
+package.license = "ISC"
+resolver = "3"
+members = ["crates/daytask"]
+
+[workspace.lints.clippy]
+alloc_instead_of_core = "warn"
+allow_attributes = "deny"
+allow_attributes_without_reason = "warn"
+complexity = { level = "warn", priority = -1 }
+correctness = { level = "deny", priority = -1 }
+missing_errors_doc = "warn"
+missing_panics_doc = "warn"
+missing_safety_doc = "warn"
+must_use_candidate = "warn"
+perf = { level = "warn", priority = -1 }
+return_self_not_must_use = "warn"
+std_instead_of_alloc = "warn"
+std_instead_of_core = "warn"
+use_self = "warn"
+
+[workspace.lints.rust]
+irrefutable_let_patterns = "warn"
+missing_copy_implementations = "warn"
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+unused = { level = "warn", priority = -1 }
+variant_size_differences = "warn"
+
+[workspace.lints.rustdoc]
+private_doc_tests = "warn"
+unescaped_backticks = "warn"
