@@ -30,3 +30,14 @@ impl Display for TaskId {
         self.0.fmt(f)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::TaskId;
+    #[test]
+    fn new_is_unique() {
+        let id = TaskId::new();
+        let id2 = TaskId::new();
+        assert_ne!(id, id2);
+    }
+}
