@@ -3,7 +3,7 @@ use core::sync::atomic::AtomicU64;
 use core::sync::atomic::Ordering::Relaxed;
 
 #[repr(transparent)]
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct TaskId(u64);
 
 static NEXT_ID: AtomicU64 = AtomicU64::new(1);
