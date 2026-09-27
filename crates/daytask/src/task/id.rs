@@ -1,10 +1,11 @@
 use core::fmt::{Display, Formatter, Result as FmtResult};
+use core::num::NonZeroU64;
 use core::sync::atomic::AtomicU64;
 use core::sync::atomic::Ordering::Relaxed;
 
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct TaskId(u64);
+pub struct TaskId(NonZeroU64);
 
 static NEXT_ID: AtomicU64 = AtomicU64::new(1);
 
@@ -15,13 +16,13 @@ impl TaskId {
     )]
     pub fn new() -> Self {
         let id: u64 = NEXT_ID.fetch_add(1, Relaxed);
-        Self(id)
+        Self(NonZeroU64::new(id).expect("TaskId counter must never start at or reach zero"))
     }
 }
 
 impl From<TaskId> for u64 {
     fn from(value: TaskId) -> Self {
-        value.0
+        value.0.into()
     }
 }
 
@@ -45,7 +46,7 @@ mod tests {
     fn from_taskid_to_u64() {
         let id = TaskId::new();
         let u64_id = u64::from(id);
-        assert_eq!(id.0, u64_id);
+        assert_eq!(u64::from(id), u64_id);
     }
 
     #[test]
