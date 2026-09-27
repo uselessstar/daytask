@@ -15,4 +15,9 @@ impl TaskId {
         let id: u64 = NEXT_ID.fetch_add(1, Relaxed);
         Self(id)
     }
+
+    #[must_use]
+    pub fn as_u64(&self) -> u64 {
+        self.0
+    }
 }
