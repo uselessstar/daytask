@@ -7,6 +7,7 @@ pub struct Task {
 }
 
 impl Task {
+    #[must_use]
     pub fn new() -> Self {
         Self { id: TaskId::new() }
     }
