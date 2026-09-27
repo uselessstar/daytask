@@ -40,4 +40,11 @@ mod tests {
         let id2 = TaskId::new();
         assert_ne!(id, id2);
     }
+
+    #[test]
+    fn from_taskid_to_u64() {
+        let id = TaskId::new();
+        let u64_id = u64::from(id);
+        assert_eq!(id.0, u64_id);
+    }
 }
