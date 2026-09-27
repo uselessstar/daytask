@@ -47,4 +47,11 @@ mod tests {
         let u64_id = u64::from(id);
         assert_eq!(id.0, u64_id);
     }
+
+    #[test]
+    fn display_taskid() {
+        let id = TaskId::new();
+        let id_str = format!("{}", id);
+        assert_eq!(id_str, id.0.to_string());
+    }
 }
