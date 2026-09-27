@@ -1,3 +1,4 @@
+use core::fmt::{Display, Formatter, Result as FmtResult};
 use core::sync::atomic::AtomicU64;
 use core::sync::atomic::Ordering::Relaxed;
 
@@ -21,5 +22,11 @@ impl TaskId {
 impl From<TaskId> for u64 {
     fn from(value: TaskId) -> Self {
         value.0
+    }
+}
+
+impl Display for TaskId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        self.0.fmt(f)
     }
 }
