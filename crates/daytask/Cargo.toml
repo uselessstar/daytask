@@ -6,5 +6,8 @@ description = "todo"
 repository.workspace = true
 license.workspace = true
 
+[dependencies]
+thiserror = "2.0.21"
+
 [lints]
 workspace = true
