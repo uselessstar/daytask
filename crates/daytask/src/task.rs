@@ -1,6 +1,6 @@
 mod id;
 
-pub use id::TaskId;
+pub use id::{TaskId, TaskIdError};
 
 pub struct Task {
     id: TaskId,

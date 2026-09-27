@@ -2,4 +2,4 @@
 
 mod task;
 
-pub use task::{Task, TaskId};
+pub use task::{Task, TaskId, TaskIdError};

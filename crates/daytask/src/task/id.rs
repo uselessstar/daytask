@@ -3,6 +3,12 @@ use core::num::NonZeroU64;
 use core::sync::atomic::AtomicU64;
 use core::sync::atomic::Ordering::Relaxed;
 
+mod error;
+
+pub use error::TaskIdError;
+
+type Result<T> = core::result::Result<T, TaskIdError>;
+
 #[repr(transparent)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct TaskId(NonZeroU64);
@@ -29,6 +35,14 @@ impl From<TaskId> for u64 {
 impl Display for TaskId {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         self.0.fmt(f)
+    }
+}
+
+impl TryFrom<u64> for TaskId {
+    type Error = TaskIdError;
+
+    fn try_from(value: u64) -> Result<Self> {
+        NonZeroU64::new(value).map(Self).ok_or(TaskIdError::Zero)
     }
 }
 
