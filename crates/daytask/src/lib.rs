@@ -1,7 +1,5 @@
 #![doc = include_str!("../README.md")]
 
-pub struct Task {
-    id: TaskId,
-}
+mod task;
 
-pub struct TaskId(u64);
+pub use task::{Task, TaskId};
