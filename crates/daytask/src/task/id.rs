@@ -22,6 +22,7 @@ impl TaskId {
     )]
     pub fn new() -> Self {
         let id: u64 = NEXT_ID.fetch_add(1, Relaxed);
+        debug_assert_ne!(id, 0, "TaskId counter must never reach zero");
         Self(NonZeroU64::new(id).expect("TaskId counter must never start at or reach zero"))
     }
 }
