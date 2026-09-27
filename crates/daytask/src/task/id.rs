@@ -50,6 +50,8 @@ impl TryFrom<u64> for TaskId {
 #[cfg(test)]
 mod tests {
     use super::TaskId;
+    use super::TaskIdError;
+
     #[test]
     fn new_is_unique() {
         let id = TaskId::new();
@@ -69,5 +71,10 @@ mod tests {
         let id = TaskId::new();
         let id_str = format!("{}", id);
         assert_eq!(id_str, id.0.to_string());
+    }
+
+    #[test]
+    fn try_from_zero_fails() {
+        assert_eq!(TaskId::try_from(0), Err(TaskIdError::Zero));
     }
 }
