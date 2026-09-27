@@ -1,5 +1,7 @@
+mod id;
+
+pub use id::TaskId;
+
 pub struct Task {
     id: TaskId,
 }
-
-pub struct TaskId(u64);
